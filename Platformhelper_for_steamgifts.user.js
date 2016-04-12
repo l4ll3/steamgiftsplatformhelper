@@ -28,11 +28,9 @@ function getHtml5Storage() {
   }
 }
 
-//New changes
-
-function getSteamURL(node) {
+function getHref(node, aClass) {
   try {
-    return node.find("a.giveaway__icon").attr("href").trim();  
+    return node.find(aClass).attr("href").trim();  
   } catch (e) {
     console.log("get steam url error: " + e + " on node: " + node);
     return "";
@@ -40,7 +38,7 @@ function getSteamURL(node) {
 }
 
 function addPlatformToGrid(gridTitle) {
-    var steamURL = getSteamURL(gridTitle);
+    var steamURL = getHref(gridTitle, "a.giveaway__icon");
     if (!steamURL.length) {
       return;
     }
@@ -87,8 +85,7 @@ $(document).ready(function() {
   var wrappers = $("div.featured__container").find("div.featured__inner-wrap");
   wrappers.each(function() {
     var wrap = $(this);
-    //var steamURL = wrap.find("a:first").attr("href").trim();
-    var steamURL = getSteamURL(wrap);
+    var steamURL = getHref(wrap, "a.global__image-outer-wrap");
     if (!steamURL.length) {
       return;
     }
@@ -128,8 +125,7 @@ var pinnedGiveaways = $("div.pinned-giveaways__outer-wrap").find("h2.giveaway__h
 pinnedGiveaways.each(function() {
   var header = $(this);
   console.log("HERE");
-  //var steamURL = header.find("a.giveaway__icon").attr("href").trim();
-  var steamURL = getSteamURL(header);
+  var steamURL = getHref(header,"a.giveaway__icon");
   console.log(steamURL);
   if (!steamURL.length) {
   console.log("THEN HERE");
