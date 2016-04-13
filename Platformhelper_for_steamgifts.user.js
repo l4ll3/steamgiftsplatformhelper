@@ -141,6 +141,7 @@ function addPlatformGAs() {
 
     if (platformhtml != null) {
       header.append("<span>" + platformhtml + "</div>");
+      filterPlatform(header.closest(".giveaway__row-outer-wrap"));
     }
     else {
       GM_xmlhttpRequest({
@@ -150,6 +151,7 @@ function addPlatformGAs() {
           var platform = $(response.responseText).find("div.game_area_purchase_platform");
           if (platform.length) {
             header.append("<span>" + platform.html() + "</div>");
+            filterPlatform(header.closest(".giveaway__row-outer-wrap"));
             if (storage != null)  {
               storage.setItem(steamURL, platform.html());
             }
@@ -157,7 +159,6 @@ function addPlatformGAs() {
         }
       });
     }
-    filterPlatform(header.closest(".giveaway__row-outer-wrap"));
   });
 }
 
