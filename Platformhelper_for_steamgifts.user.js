@@ -6,6 +6,7 @@
 // @require     http://code.jquery.com/jquery.min.js
 // @author      lalle
 // @include     http://www.steamgifts.com/*
+// @include     https://www.steamgifts.com/*
 // @grant       GM_xmlhttpRequest
 // ==/UserScript==
 
@@ -80,8 +81,15 @@ function filterPlatform(node) {
     }
 }
 
+function addPlatformToSGPPGrid() {
+  var sgppGridTitles = $("div.SGPP__gridTile");
+  sgppGridTitles.each(function() {
+    var gridTitle = $(this);
+    addPlatformToGrid(gridTitle);
+  });  
+}
 
-$(document).ready(function() {
+function addPlatformToGiveawayPage() {
   var wrappers = $("div.featured__container").find("div.featured__inner-wrap");
   wrappers.each(function() {
     var wrap = $(this);
@@ -113,50 +121,51 @@ $(document).ready(function() {
       });
     }
   });
-  
-  var sgppGridTitles = $("div.SGPP__gridTile");
-  sgppGridTitles.each(function() {
-    var gridTitle = $(this);
-    addPlatformToGrid(gridTitle);
-  });
-});
+}
 
-var pinnedGiveaways = $("div.pinned-giveaways__outer-wrap").find("h2.giveaway__heading");
-pinnedGiveaways.each(function() {
-  var header = $(this);
-  console.log("HERE");
-  var steamURL = getHref(header,"a.giveaway__icon");
-  console.log(steamURL);
-  if (!steamURL.length) {
-  console.log("THEN HERE");
-    return;
-  }
-  
-  var storage = getHtml5Storage();
-  
-  var platformhtml = "";
-  if (storage != null) {
-      platformhtml = storage.getItem(steamURL);
+function addPlatformGAs() {
+  var giveaways = $("h2.giveaway__heading");
+  giveaways.each(function() {
+    var header = $(this);
+    var steamURL = getHref(header,"a.giveaway__icon");
+    if (!steamURL.length) {
+      return;
     }
-  
-  if (platformhtml != null) {
-    header.append("<span>" + platformhtml + "</div>");
-  }
-  else {
-    GM_xmlhttpRequest({
-      method: "GET",
-      url: steamURL,
-      onload: function(response) {
-        var platform = $(response.responseText).find("div.game_area_purchase_platform");
-        if (platform.length) {
-          header.append("<span>" + platform.html() + "</div>");
-          if (storage != null)  {
-            storage.setItem(steamURL, platform.html());
+
+    var storage = getHtml5Storage();
+
+    var platformhtml = "";
+    if (storage != null) {
+        platformhtml = storage.getItem(steamURL);
+      }
+
+    if (platformhtml != null) {
+      header.append("<span>" + platformhtml + "</div>");
+    }
+    else {
+      GM_xmlhttpRequest({
+        method: "GET",
+        url: steamURL,
+        onload: function(response) {
+          var platform = $(response.responseText).find("div.game_area_purchase_platform");
+          if (platform.length) {
+            header.append("<span>" + platform.html() + "</div>");
+            if (storage != null)  {
+              storage.setItem(steamURL, platform.html());
+            }
           }
         }
-      }
-    });
-  }
-  filterPlatform(header.parent().parent().parent());
+      });
+    }
+    filterPlatform(header.closest(".giveaway__row-outer-wrap"));
+  });
+}
+
+
+//Add and filter
+$(document).ready(function() {
+  addPlatformToGiveawayPage();
+  addPlatformToSGPPGrid();
 });
 
+addPlatformGAs();
