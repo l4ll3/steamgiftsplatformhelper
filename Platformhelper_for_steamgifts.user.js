@@ -7,6 +7,8 @@
 // @author      lalle
 // @include     http://www.steamgifts.com/*
 // @include     https://www.steamgifts.com/*
+// @exlcude     http://www.steamgifts.com/user/*
+// @exlcude     https://www.steamgifts.com/user/*
 // @grant       GM_xmlhttpRequest
 // ==/UserScript==
 
@@ -51,9 +53,7 @@ function addPlatformToGrid(gridTitle) {
 
   if (platformhtml != null)  {
     gridTitle.find("a:first").append("<span class=\"lalle__platform\">" + platformhtml + "</div>");
-    if (window.location.href.indexOf("wishlist") == -1) {
-      filterPlatform(gridTitle);
-    }        
+    filterPlatform(gridTitle);
   }
   else {
     GM_xmlhttpRequest({
@@ -74,6 +74,10 @@ function addPlatformToGrid(gridTitle) {
 }
 
 function filterPlatform(node) {
+    if (window.location.href.indexOf("wishlist") != -1 ||
+        window.location.href.indexOf("/user/") != -1 ) {
+      return;
+    }
     var hasPlatform = node.find("span.platform_img");
     var isLinux = node.find("span.linux");
     if (hasPlatform.length && !isLinux.length) {
