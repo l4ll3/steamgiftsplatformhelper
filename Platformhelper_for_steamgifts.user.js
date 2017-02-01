@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Platformhelper for Steamgifts++
 // @namespace   lalle.se
-// @version     0.1
+// @version     0.2
 // @description Show and filter platform for SG++
 // @require     http://code.jquery.com/jquery.min.js
 // @require     https://cdn.jsdelivr.net/simplestorage/0.2.1/simpleStorage.min.js
